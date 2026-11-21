@@ -9,4 +9,12 @@ function LandingPage(req,res){
 
 };
 
-module. exports = LandingPage; 
+
+function LogginPage(req,res){
+    console.log("LOGGIN PAGE  "); 
+     res.sendFile(path.join(__dirname,"../views","loggin.html"));
+
+
+};
+
+module. exports ={LandingPage,LogginPage} ; 

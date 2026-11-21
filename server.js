@@ -3,8 +3,7 @@ const fs = require("fs/promises");
 const path = require('path');
 const dotenv = require('dotenv');
 const  db = require("./dbaccess");
-
-const LandingPage = require("./controllers/pageController");
+const {LandingPage,LogginPage }= require("./controllers/pageController");
 
 
 dotenv.config(); 
@@ -17,6 +16,8 @@ app.use(express.json());
 
 /////////////////////Routes //
 
-app.get("/",LandingPage)
+app.get("/",LandingPage);
+app.get("/loggin",LogginPage);
+
 
 app.listen(PORT)
