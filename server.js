@@ -13,5 +13,12 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+/////////////////////Routes //
+
+app.get("/",function(req,res){
+    console.log("LANDING PAGE "); 
+    res.send("Landing page "); 
+
+})
 
 app.listen(PORT)
