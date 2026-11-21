@@ -4,6 +4,8 @@ const path = require('path');
 const dotenv = require('dotenv');
 const  db = require("./dbaccess");
 
+const LandingPage = require("./controllers/pageController");
+
 
 dotenv.config(); 
 
@@ -15,11 +17,6 @@ app.use(express.json());
 
 /////////////////////Routes //
 
-app.get("/",function(req,res){
-    console.log("LANDING PAGE "); 
-     res.sendFile(path.join(__dirname,"views","index.html"));
-
-
-})
+app.get("/",LandingPage)
 
 app.listen(PORT)
