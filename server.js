@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const  db = require("./dbaccess");
 const {LandingPage,LogginPage,NewUser }= require("./controllers/pageController");
 const {  Checkuser  } = require ("./middlewares/Authenticate");
+const router = require("./routes/routes");
 
 
 dotenv.config(); 
@@ -14,15 +15,8 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-/////////////Middlewares /////////////////
 
-
-/////////////////////Routes //
-
-app.get("/",LandingPage);
-app.get("/loggin",LogginPage);
-app.post("/api/register", Checkuser,NewUser);
-
+app.use("/", router);
 
 
 app.listen(PORT)
