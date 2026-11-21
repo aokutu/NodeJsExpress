@@ -17,7 +17,8 @@ app.use(express.json());
 
 app.get("/",function(req,res){
     console.log("LANDING PAGE "); 
-    res.send("Landing page "); 
+     res.sendFile(path.join(__dirname,"views","index.html"));
+
 
 })
 
