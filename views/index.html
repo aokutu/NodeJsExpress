@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020617" />
+  <title>Express Tutorial</title>
+
+  <!-- PWA Manifest Hook -->
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+
+  <div class="min-h-screen flex">
+
+    <!-- Vertical Sidebar Navigation -->
+    <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
+      
+      <!-- Brand / Title -->
+      <div class="h-16 px-6 flex items-center justify-between border-b border-slate-800">
+        <span class="font-bold text-lg tracking-tight text-emerald-400">Express Docs</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">SPA</span>
+      </div>
+
+      <!-- Menu List -->
+      <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+
+        <!-- Single Link (Home / Route "/") -->
+        <a href="/" data-route="/" class="nav-link block px-3 py-2.5 rounded-lg bg-slate-800/80 text-white text-sm font-medium">
+          Overview
+        </a>
+
+        <!-- Expandable Menu Tab 1 -->
+        <div>
+          <button
+            type="button"
+            onclick="toggleMenu('menu-1', 'arrow-1')"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/60 hover:text-white text-sm font-medium transition"
+          >
+            <span>1. Getting Started</span>
+            <svg id="arrow-1" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div id="menu-1" class="hidden pl-4 mt-1 space-y-1 border-l border-slate-800 ml-3">
+            <a href="/setup" data-route="/setup" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
+              Project Setup
+            </a>
+            <a href="/server" data-route="/server" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
+              Express Server
+            </a>
+          </div>
+        </div>
+
+        <!-- Expandable Menu Tab 2 -->
+        <div>
+          <button
+            type="button"
+            onclick="toggleMenu('menu-2', 'arrow-2')"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/60 hover:text-white text-sm font-medium transition"
+          >
+            <span>2. REST API Routes</span>
+            <svg id="arrow-2" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div id="menu-2" class="hidden pl-4 mt-1 space-y-1 border-l border-slate-800 ml-3">
+            <a href="/routes/get" data-route="/routes/get" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
+              GET Requests
+            </a>
+            <a href="/routes/post" data-route="/routes/post" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
+              POST Requests
+            </a>
+            <a href="/routes/params" data-route="/routes/params" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
+              Route Params (:id)
+            </a>
+          </div>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- Dynamic SPA View Container -->
+    <main id="app-view" class="flex-1 p-10">
+      <!-- Content gets injected here without page reloads -->
+    </main>
+
+  </div>
+
+  <!-- SPA Router + Accordion + PWA Registration -->
+  <script>
+    // 1. Expand/Collapse Vertical Sub-menus
+    function toggleMenu(menuId, arrowId) {
+      document.getElementById(menuId).classList.toggle('hidden');
+      document.getElementById(arrowId).classList.toggle('rotate-180');
+    }
+
+    // 2. Define your SPA views (Populate your content here later)
+    const views = {
+      '/': `
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /</span>
+          <h1 class="text-3xl font-bold mt-2 mb-4">Overview</h1>
+          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
+            Landing Page Content Placeholder
+          </div>
+        </div>
+      `,
+      '/setup': `
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /setup</span>
+          <h1 class="text-3xl font-bold mt-2 mb-4">Project Setup</h1>
+          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
+            Populate Project Setup content here
+          </div>
+        </div>
+      `,
+      '/server': `
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /server</span>
+          <h1 class="text-3xl font-bold mt-2 mb-4">Express Server</h1>
+          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
+            Populate Express Server content here
+          </div>
+        </div>
+      `,
+      '/routes/get': `
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /routes/get</span>
+          <h1 class="text-3xl font-bold mt-2 mb-4">GET Requests</h1>
+          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
+            Populate GET Requests tutorial here
+          </div>
+        </div>
+      `
+    };
+
+    // 3. Client-side SPA Navigation Handler
+    function navigateTo(path) {
+      const appView = document.getElementById('app-view');
+      appView.innerHTML = views[path] || `
+        <div class="max-w-3xl">
+          <span class="text-xs font-mono uppercase tracking-wider text-amber-400">Route: ${path}</span>
+          <h1 class="text-3xl font-bold mt-2 mb-4">New Section</h1>
+          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
+            Add an entry for "${path}" inside the views object
+          </div>
+        </div>
+      `;
+
+      // Highlight active link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        const isActive = link.getAttribute('data-route') === path;
+        link.classList.toggle('bg-slate-800/80', isActive);
+        link.classList.toggle('text-white', isActive);
+        link.classList.toggle('text-slate-400', !isActive);
+      });
+    }
+
+    // Intercept link clicks for instant SPA transitions
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-route]');
+      if (link) {
+        e.preventDefault();
+        const path = link.getAttribute('data-route');
+        history.pushState(null, '', path);
+        navigateTo(path);
+      }
+    });
+
+    // Support browser Back/Forward buttons
+    window.addEventListener('popstate', () => navigateTo(window.location.pathname));
+
+    // Render initial route on load
+    navigateTo(window.location.pathname);
+
+    // 4. PWA Service Worker Registration (Uncomment when you create /public/sw.js)
+    /*
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+    */
+  </script>
+
+</body>
+</html>
