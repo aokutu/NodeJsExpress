@@ -19,7 +19,7 @@
 
   <!-- Auth Card -->
   <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
-    
+
     <!-- Toggle Tabs -->
     <div class="grid grid-cols-2 border-b border-slate-800 bg-slate-950/40 p-1.5 gap-1.5">
       <button
@@ -41,11 +41,9 @@
     </div>
 
     <div class="p-8">
-      <!-- Status Alert Box (Hidden by default, useful for API feedback later) -->
-      <div id="alert-box" class="hidden mb-5 px-4 py-3 rounded-lg text-xs font-mono border"></div>
 
-      <!-- LOGIN FORM -->
-      <form id="form-login" onsubmit="handleAuth(event, '/api/login')" class="space-y-5">
+      <!-- LOGIN FORM (Standard POST) -->
+      <form id="form-login" method="POST" action="/api/login" class="space-y-5">
         <div>
           <h1 class="text-2xl font-bold tracking-tight">Welcome back</h1>
           <p class="text-sm text-slate-400 mt-1">Sign in to access your saved tutorial progress.</p>
@@ -93,11 +91,11 @@
         </p>
       </form>
 
-      <!-- REGISTRATION FORM (Hidden by default) -->
-      <form id="form-register" onsubmit="handleAuth(event, '/api/register')" class="hidden space-y-5">
+      <!-- REGISTRATION FORM (Standard POST) -->
+      <form id="form-register" method="POST" action="/api/register" class="hidden space-y-5">
         <div>
           <h1 class="text-2xl font-bold tracking-tight">Create an account</h1>
-          <p class="text-sm text-slate-400 mt-1">Start tracking your Node.js & Express API lessons.</p>
+          <p class="text-sm text-slate-400 mt-1">Start tracking your Node.js &amp; Express API lessons.</p>
         </div>
 
         <div>
@@ -150,20 +148,17 @@
           </button>
         </p>
       </form>
+
     </div>
   </div>
 
-  <!-- Toggle & API Placeholder Script -->
+  <!-- Tab Toggle Script Only -->
   <script>
     function switchTab(mode) {
       const loginForm = document.getElementById('form-login');
       const registerForm = document.getElementById('form-register');
       const tabLogin = document.getElementById('tab-login');
       const tabRegister = document.getElementById('tab-register');
-      const alertBox = document.getElementById('alert-box');
-
-      // Reset alert box when switching tabs
-      alertBox.classList.add('hidden');
 
       if (mode === 'login') {
         loginForm.classList.remove('hidden');
@@ -184,32 +179,6 @@
         tabLogin.classList.remove('bg-slate-800', 'text-white', 'shadow');
         tabLogin.classList.add('text-slate-400');
       }
-    }
-
-    // Ready for your Express POST routes (/api/login & /api/register)
-    async function handleAuth(event, endpoint) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      const payload = Object.fromEntries(formData.entries());
-
-      const alertBox = document.getElementById('alert-box');
-      alertBox.classList.remove('hidden', 'bg-rose-500/10', 'border-rose-500/30', 'text-rose-400');
-      alertBox.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
-      alertBox.textContent = `Ready to POST to ${endpoint}: ${JSON.stringify(payload)}`;
-
-      /* Uncomment when you build your Express POST routes:
-      try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (res.ok) window.location.href = '/';
-      } catch (err) {
-        console.error(err);
-      }
-      */
     }
   </script>
 

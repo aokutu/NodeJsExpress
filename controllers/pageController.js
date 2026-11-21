@@ -17,4 +17,10 @@ function LogginPage(req,res){
 
 };
 
-module. exports ={LandingPage,LogginPage} ; 
+function NewUser(req,res){
+    console.log("New User   "); 
+   res.redirect("/loggin"); 
+};
+
+
+module. exports ={LandingPage,LogginPage,NewUser} ; 
