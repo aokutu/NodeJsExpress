@@ -1,5 +1,6 @@
 const fs = require("fs/promises");
 const path = require('path');
+const db = require("./../dbaccess");
 
 
 function LandingPage(req,res){
@@ -18,6 +19,13 @@ function LogginPage(req,res){
 };
 
 function NewUser(req,res){
+
+ const username = req.body.username; 
+ const email = req.body.email; 
+ const password = req.body.password; 
+ db.prepare('INSERT INTO users ( username, email,password) VALUES (?, ?, ?)').run(username,email,password); 
+
+
     console.log("New User   "); 
    res.redirect("/loggin"); 
 };
