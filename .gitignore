@@ -1,1 +1,15 @@
+# Dependencies & environment
 node_modules/
+# .env
+# .env.*
+
+# SQLite database files (including add.db, database.sqlite, etc.)
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journalnode_modules/
