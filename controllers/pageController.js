@@ -38,6 +38,8 @@ function AuthenticateLoggin(req,res){
     const user =  db.prepare('SELECT  username FROM users WHERE  password = ?  AND  email = ? ').get(password,email); 
 
       if (user){
+       req.session.user = user.username; 
+      console.log('LOGGED IN SESSION:', req.session);
 
          res.redirect("/"); 
        

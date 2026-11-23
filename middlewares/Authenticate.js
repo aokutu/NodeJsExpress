@@ -10,6 +10,7 @@ const Checkuser = ((req, res, next) => {
     const user =  db.prepare('SELECT  username ,email FROM users WHERE username = ?  OR email = ? ').get(username,email); 
     
      if (user){
+     
        return res.status(409).json({
       error: "Username or email already in use",
     });

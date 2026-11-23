@@ -1,4 +1,6 @@
 const express = require('express');
+const session = require('express-session');
+
 const fs = require("fs/promises");
 const path = require('path');
 const dotenv = require('dotenv');
@@ -15,6 +17,13 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(session({
+  secret: 'gfg-key',
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 app.use("/", router);
 
