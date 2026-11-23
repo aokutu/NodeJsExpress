@@ -31,4 +31,22 @@ function NewUser(req,res){
 };
 
 
-module. exports ={LandingPage,LogginPage,NewUser} ; 
+function AuthenticateLoggin(req,res){
+    const email = req.body.email; 
+    const password = req.body.password; 
+
+    const user =  db.prepare('SELECT  username FROM users WHERE  password = ?  AND  email = ? ').get(password,email); 
+
+      if (user){
+
+         res.redirect("/"); 
+       
+    } else {
+         res.redirect("/loggin"); 
+    }
+    
+
+}
+
+
+module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin} ; 
