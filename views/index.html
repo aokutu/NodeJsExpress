@@ -18,7 +18,7 @@
 
     <!-- Vertical Sidebar Navigation -->
     <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
-      
+
       <!-- Brand / Title -->
       <div class="h-16 px-6 flex items-center justify-between border-b border-slate-800">
         <span class="font-bold text-lg tracking-tight text-emerald-400">Express Docs</span>
@@ -85,14 +85,40 @@
       </nav>
     </aside>
 
-    <!-- Dynamic SPA View Container -->
-    <main id="app-view" class="flex-1 p-10">
-      <!-- Content gets injected here without page reloads -->
-    </main>
+    <!-- Right Column: Top Header + Dynamic SPA View Container -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Top Bar with Session Username & Logout -->
+      <header class="h-16 px-8 bg-slate-900/60 border-b border-slate-800 flex items-center justify-end gap-3 shrink-0">
+        <div id="session-user-box" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="text-slate-400">Signed in as</span>
+          <span id="session-username" class="font-medium text-white">Loading...</span>
+        </div>
+
+        <button
+          id="logout-btn"
+          type="button"
+          onclick="handleLogout()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium bg-slate-800 hover:bg-rose-500/20 text-slate-200 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 transition cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1" />
+          </svg>
+          <span>Logout</span>
+        </button>
+      </header>
+
+      <!-- Dynamic SPA View Container -->
+      <main id="app-view" class="flex-1 p-10">
+        <!-- Content gets injected here without page reloads -->
+      </main>
+
+    </div>
 
   </div>
 
-  <!-- SPA Router + Accordion + PWA Registration -->
+  <!-- SPA Router + Session UI + Accordion + PWA Registration -->
   <script>
     // 1. Expand/Collapse Vertical Sub-menus
     function toggleMenu(menuId, arrowId) {
@@ -100,7 +126,40 @@
       document.getElementById(arrowId).classList.toggle('rotate-180');
     }
 
-    // 2. Define your SPA views (Populate your content here later)
+    // 2. Load Current User from Express Session
+    // Adjust endpoint/response shape to match your backend (e.g. /api/me or /api/session)
+    async function loadSessionUser() {
+      const usernameEl = document.getElementById('session-username');
+      try {
+        const res = await fetch('/api/me', { credentials: 'same-origin' });
+        if (!res.ok) {
+          usernameEl.textContent = 'Guest';
+          return;
+        }
+        const data = await res.json();
+        const username = data?.user?.username || data?.username;
+        usernameEl.textContent = username || 'Guest';
+      } catch (err) {
+        usernameEl.textContent = 'Guest';
+      }
+    }
+
+    // 3. Logout Handler
+    // Adjust method/URL (/logout or /api/logout) to match your route
+    async function handleLogout() {
+      const logoutBtn = document.getElementById('logout-btn');
+      logoutBtn.disabled = true;
+      try {
+        await fetch('/logout', {
+          method: 'POST',
+          credentials: 'same-origin'
+        });
+      } finally {
+        window.location.href = '/loggin';
+      }
+    }
+
+    // 4. Define your SPA views (Populate your content here later)
     const views = {
       '/': `
         <div class="max-w-3xl">
@@ -140,7 +199,7 @@
       `
     };
 
-    // 3. Client-side SPA Navigation Handler
+    // 5. Client-side SPA Navigation Handler
     function navigateTo(path) {
       const appView = document.getElementById('app-view');
       appView.innerHTML = views[path] || `
@@ -176,10 +235,11 @@
     // Support browser Back/Forward buttons
     window.addEventListener('popstate', () => navigateTo(window.location.pathname));
 
-    // Render initial route on load
+    // Render initial route & load session user on load
     navigateTo(window.location.pathname);
+    loadSessionUser();
 
-    // 4. PWA Service Worker Registration (Uncomment when you create /public/sw.js)
+    // 6. PWA Service Worker Registration (Uncomment when you create /public/sw.js)
     /*
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
