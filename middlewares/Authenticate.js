@@ -20,6 +20,18 @@ const Checkuser = ((req, res, next) => {
      return next();
 });
 
-module.exports ={ Checkuser   } ; 
+
+function RequireLogin(req,res,next){
+  if (req.session && req.session.user) {
+    console.log('MIDDLEWARE ALLOWED:', req.session.user);
+    return next(); 
+
+  } else {
+     res.redirect("/loggin"); 
+  }
+
+}
+
+module.exports ={ Checkuser,RequireLogin   } ; 
 
 
