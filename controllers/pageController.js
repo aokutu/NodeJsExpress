@@ -50,5 +50,24 @@ function AuthenticateLoggin(req,res){
 
 }
 
+function GetUserSessionName(req,res){
+     const name =  req.session.user; 
+     console.log("Test GetUserSession" + name );
+     if (name == undefined ){
+          res.redirect("/loggin");
 
-module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin} ; 
+     }else {
+           res.json({username : name }); 
+     }
+    
+
+}
+
+function Logout(req,res){
+     console.log("Logg out "  + req.session.user );
+     req.session.destroy();
+     res.redirect("/loggin");
+}
+
+
+module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin,GetUserSessionName,Logout} ; 

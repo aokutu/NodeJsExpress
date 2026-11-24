@@ -3,250 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#020617" />
-  <title>Express Tutorial</title>
-
-  <!-- PWA Manifest Hook -->
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
-
+  <title>Express Notes</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  
+  <script>
+  $(document).ready(function () {
+    $.get('/api/me', function (data) {
+      if (data && data.username) {
+        $('#username').text(data.username);
+      }
+    }).fail(function () {
+      $('#username').text('Guest');
+    });
+  });
+</script>
+
 </head>
-<body class="bg-slate-950 text-slate-100 antialiased">
+<body class="bg-slate-950 text-slate-100">
 
   <div class="min-h-screen flex">
 
-    <!-- Vertical Sidebar Navigation -->
-    <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
-
-      <!-- Brand / Title -->
-      <div class="h-16 px-6 flex items-center justify-between border-b border-slate-800">
-        <span class="font-bold text-lg tracking-tight text-emerald-400">Express Docs</span>
-        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">SPA</span>
+    <!-- Left Sidebar -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 p-4 space-y-2 shrink-0">
+      <div class="pb-3 mb-3 border-b border-slate-800">
+        <span class="font-bold text-lg text-emerald-400">Express Notes</span>
       </div>
 
-      <!-- Menu List -->
-      <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+      <a href="/" class="block px-3 py-2 rounded bg-slate-800 text-sm text-white">
+        Overview
+      </a>
 
-        <!-- Single Link (Home / Route "/") -->
-        <a href="/" data-route="/" class="nav-link block px-3 py-2.5 rounded-lg bg-slate-800/80 text-white text-sm font-medium">
-          Overview
-        </a>
-
-        <!-- Expandable Menu Tab 1 -->
-        <div>
-          <button
-            type="button"
-            onclick="toggleMenu('menu-1', 'arrow-1')"
-            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/60 hover:text-white text-sm font-medium transition"
-          >
-            <span>1. Getting Started</span>
-            <svg id="arrow-1" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <div id="menu-1" class="hidden pl-4 mt-1 space-y-1 border-l border-slate-800 ml-3">
-            <a href="/setup" data-route="/setup" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
-              Project Setup
-            </a>
-            <a href="/server" data-route="/server" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
-              Express Server
-            </a>
-          </div>
+      <!-- Sub-menu 1 -->
+      <div>
+        <button id="btn-setup" type="button" class="w-full text-left px-3 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+          1. Getting Started
+        </button>
+        <div id="sub-setup" class="hidden pl-4 mt-1 space-y-1">
+          <a href="/setup" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Project Setup</a>
+          <a href="/server" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Express Server</a>
         </div>
+      </div>
 
-        <!-- Expandable Menu Tab 2 -->
-        <div>
-          <button
-            type="button"
-            onclick="toggleMenu('menu-2', 'arrow-2')"
-            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/60 hover:text-white text-sm font-medium transition"
-          >
-            <span>2. REST API Routes</span>
-            <svg id="arrow-2" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <div id="menu-2" class="hidden pl-4 mt-1 space-y-1 border-l border-slate-800 ml-3">
-            <a href="/routes/get" data-route="/routes/get" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
-              GET Requests
-            </a>
-            <a href="/routes/post" data-route="/routes/post" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
-              POST Requests
-            </a>
-            <a href="/routes/params" data-route="/routes/params" class="nav-link block px-3 py-2 rounded-md text-sm text-slate-400 hover:text-emerald-400 hover:bg-slate-800/40 transition">
-              Route Params (:id)
-            </a>
-          </div>
+      <!-- Sub-menu 2 -->
+      <div>
+        <button id="btn-routes" type="button" class="w-full text-left px-3 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+          2. REST Routes
+        </button>
+        <div id="sub-routes" class="hidden pl-4 mt-1 space-y-1">
+          <a href="/routes/get" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">GET Requests</a>
+          <a href="/routes/post" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">POST Requests</a>
+          <a href="/routes/params" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Route Params (:id)</a>
         </div>
-
-      </nav>
+      </div>
     </aside>
 
-    <!-- Right Column: Top Header + Dynamic SPA View Container -->
-    <div class="flex-1 flex flex-col min-w-0">
+    <!-- Right Side -->
+    <div class="flex-1 flex flex-col">
 
-      <!-- Top Bar with Session Username & Logout -->
-      <header class="h-16 px-8 bg-slate-900/60 border-b border-slate-800 flex items-center justify-end gap-3 shrink-0">
-        <div id="session-user-box" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <span class="text-slate-400">Signed in as</span>
-          <span id="session-username" class="font-medium text-white">Loading...</span>
-        </div>
-
-        <button
-          id="logout-btn"
-          type="button"
-          onclick="handleLogout()"
-          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium bg-slate-800 hover:bg-rose-500/20 text-slate-200 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 transition cursor-pointer"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1" />
-          </svg>
-          <span>Logout</span>
-        </button>
+      <!-- Top Bar -->
+      <header class="h-14 px-6 bg-slate-900 border-b border-slate-800 flex items-center justify-end gap-3">
+        <span class="text-sm text-slate-400">
+          User: <strong id="username" class="text-white">Guest</strong>
+        </span>
+        <form action="/logout" method="POST" class="inline">
+          <button type="submit" class="px-3 py-1 rounded text-sm bg-slate-800 hover:bg-slate-700 text-slate-200">
+            Logout
+          </button>
+        </form>
       </header>
 
-      <!-- Dynamic SPA View Container -->
-      <main id="app-view" class="flex-1 p-10">
-        <!-- Content gets injected here without page reloads -->
+      <!-- Main Content -->
+      <main id="content" class="p-8 max-w-3xl">
+        <h1 class="text-2xl font-bold mb-3">Express Learning Page</h1>
+        <p class="text-slate-400 mb-6">
+          Use this page as a simple shell while you build out your Express routes, middlewares, and controllers.
+        </p>
+        <div class="border border-dashed border-slate-700 rounded-lg p-8 text-slate-400">
+          Put your page content or Express-rendered data here.
+        </div>
       </main>
 
     </div>
-
   </div>
 
-  <!-- SPA Router + Session UI + Accordion + PWA Registration -->
   <script>
-    // 1. Expand/Collapse Vertical Sub-menus
-    function toggleMenu(menuId, arrowId) {
-      document.getElementById(menuId).classList.toggle('hidden');
-      document.getElementById(arrowId).classList.toggle('rotate-180');
-    }
+    $(document).ready(function () {
+      // Toggle sidebar sub-menus with jQuery
+      $("#btn-setup").on("click", function () {
+        $("#sub-setup").toggleClass("hidden");
+      });
 
-    // 2. Load Current User from Express Session
-    // Adjust endpoint/response shape to match your backend (e.g. /api/me or /api/session)
-    async function loadSessionUser() {
-      const usernameEl = document.getElementById('session-username');
-      try {
-        const res = await fetch('/api/me', { credentials: 'same-origin' });
-        if (!res.ok) {
-          usernameEl.textContent = 'Guest';
-          return;
-        }
-        const data = await res.json();
-        const username = data?.user?.username || data?.username;
-        usernameEl.textContent = username || 'Guest';
-      } catch (err) {
-        usernameEl.textContent = 'Guest';
-      }
-    }
+      $("#btn-routes").on("click", function () {
+        $("#sub-routes").toggleClass("hidden");
+      });
 
-    // 3. Logout Handler
-    // Adjust method/URL (/logout or /api/logout) to match your route
-    async function handleLogout() {
-      const logoutBtn = document.getElementById('logout-btn');
-      logoutBtn.disabled = true;
-      try {
-        await fetch('/logout', {
-          method: 'POST',
-          credentials: 'same-origin'
+      // Optional: load current user from an Express endpoint like GET /api/me
+      $.get("/api/me")
+        .done(function (data) {
+          if (data && data.username) {
+            $("#username").text(data.username);
+          }
+        })
+        .fail(function () {
+          $("#username").text("Guest");
         });
-      } finally {
-        window.location.href = '/loggin';
-      }
-    }
-
-    // 4. Define your SPA views (Populate your content here later)
-    const views = {
-      '/': `
-        <div class="max-w-3xl">
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /</span>
-          <h1 class="text-3xl font-bold mt-2 mb-4">Overview</h1>
-          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
-            Landing Page Content Placeholder
-          </div>
-        </div>
-      `,
-      '/setup': `
-        <div class="max-w-3xl">
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /setup</span>
-          <h1 class="text-3xl font-bold mt-2 mb-4">Project Setup</h1>
-          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
-            Populate Project Setup content here
-          </div>
-        </div>
-      `,
-      '/server': `
-        <div class="max-w-3xl">
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /server</span>
-          <h1 class="text-3xl font-bold mt-2 mb-4">Express Server</h1>
-          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
-            Populate Express Server content here
-          </div>
-        </div>
-      `,
-      '/routes/get': `
-        <div class="max-w-3xl">
-          <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">Route: /routes/get</span>
-          <h1 class="text-3xl font-bold mt-2 mb-4">GET Requests</h1>
-          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
-            Populate GET Requests tutorial here
-          </div>
-        </div>
-      `
-    };
-
-    // 5. Client-side SPA Navigation Handler
-    function navigateTo(path) {
-      const appView = document.getElementById('app-view');
-      appView.innerHTML = views[path] || `
-        <div class="max-w-3xl">
-          <span class="text-xs font-mono uppercase tracking-wider text-amber-400">Route: ${path}</span>
-          <h1 class="text-3xl font-bold mt-2 mb-4">New Section</h1>
-          <div class="border-2 border-dashed border-slate-800 rounded-xl p-12 text-center text-slate-500">
-            Add an entry for "${path}" inside the views object
-          </div>
-        </div>
-      `;
-
-      // Highlight active link
-      document.querySelectorAll('.nav-link').forEach(link => {
-        const isActive = link.getAttribute('data-route') === path;
-        link.classList.toggle('bg-slate-800/80', isActive);
-        link.classList.toggle('text-white', isActive);
-        link.classList.toggle('text-slate-400', !isActive);
-      });
-    }
-
-    // Intercept link clicks for instant SPA transitions
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('[data-route]');
-      if (link) {
-        e.preventDefault();
-        const path = link.getAttribute('data-route');
-        history.pushState(null, '', path);
-        navigateTo(path);
-      }
     });
-
-    // Support browser Back/Forward buttons
-    window.addEventListener('popstate', () => navigateTo(window.location.pathname));
-
-    // Render initial route & load session user on load
-    navigateTo(window.location.pathname);
-    loadSessionUser();
-
-    // 6. PWA Service Worker Registration (Uncomment when you create /public/sw.js)
-    /*
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js');
-      });
-    }
-    */
   </script>
 
 </body>

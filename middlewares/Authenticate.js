@@ -32,6 +32,13 @@ function RequireLogin(req,res,next){
 
 }
 
-module.exports ={ Checkuser,RequireLogin   } ; 
+
+function NoCache(req, res, next) {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+}
+
+
+module.exports ={ Checkuser,RequireLogin ,NoCache  } ; 
 
 
