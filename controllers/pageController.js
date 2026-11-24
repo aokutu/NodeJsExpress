@@ -36,20 +36,26 @@ function LogginPage(req,res){
 };
 
 
-function AuthenticateLoggin(req,res){
+async function AuthenticateLoggin(req,res){
     const email = req.body.email; 
     const password = req.body.password; 
-
-    const user =  db.prepare('SELECT  username FROM users WHERE  password = ?  AND  email = ? ').get(password,email); 
+    const user =  db.prepare('SELECT  username,password FROM users WHERE  email = ? ').get(email); 
 
       if (user){
+      const isMatch = await bcrypt.compare(password, user.password); 
+      if (! isMatch){
+         return   res.redirect("/loggin"); 
+
+      }
+
        req.session.user = user.username; 
+
       console.log('LOGGED IN SESSION:', req.session);
 
-         res.redirect("/"); 
+        return  res.redirect("/"); 
        
     } else {
-         res.redirect("/loggin"); 
+       return   res.redirect("/loggin"); 
     }
     
 

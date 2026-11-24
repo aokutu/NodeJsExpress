@@ -2,7 +2,6 @@
 const { request } = require("express");
 const db = require("./../dbaccess");
 
-
 const Checkuser = ((req, res, next) => {
 
     const username = req.body.username; 
@@ -13,10 +12,6 @@ const Checkuser = ((req, res, next) => {
      if (user){
      
        return   res.redirect("/loggin");
-       /*res.status(409).json({
-      error: "Username or email already in use",
-    }); */
-
      }
 
      return next();
