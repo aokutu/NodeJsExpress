@@ -2,6 +2,10 @@ const fs = require("fs/promises");
 const path = require('path');
 const db = require("./../dbaccess");
 
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
+
 
 function LandingPage(req,res){
     console.log("LANDING PAGE "); 
@@ -18,12 +22,13 @@ function LogginPage(req,res){
 
 };
 
-function NewUser(req,res){
+ async   function NewUser(req,res){
 
  const username = req.body.username; 
  const email = req.body.email; 
  const password = req.body.password; 
- db.prepare('INSERT INTO users ( username, email,password) VALUES (?, ?, ?)').run(username,email,password); 
+ const hashedPassword = await bcrypt.hash(password, 10);
+ db.prepare('INSERT INTO users ( username, email,password) VALUES (?, ?, ?)').run(username,email, hashedPassword  ); 
 
 
     console.log("New User   "); 
