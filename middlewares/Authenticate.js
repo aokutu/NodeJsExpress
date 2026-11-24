@@ -11,9 +11,10 @@ const Checkuser = ((req, res, next) => {
     
      if (user){
      
-       return res.status(409).json({
+       return   res.redirect("/loggin");
+       /*res.status(409).json({
       error: "Username or email already in use",
-    });
+    }); */
 
      }
 
