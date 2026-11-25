@@ -80,5 +80,16 @@ function Logout(req,res){
      res.redirect("/loggin");
 }
 
+function uploadFile(req, res) {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
 
-module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin,GetUserSessionName,Logout} ; 
+  return res.json({
+    message: "Uploaded",
+    file: req.file,
+  });
+}
+
+
+module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin,GetUserSessionName,Logout,uploadFile } ; 

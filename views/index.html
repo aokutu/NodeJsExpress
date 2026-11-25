@@ -3,22 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Express Notes</title>
+  <meta name="theme-color" content="#10b981" />
+  <title>Express Notes SPA + PWA (jQuery)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  
-  <script>
-  $(document).ready(function () {
-    $.get('/api/me', function (data) {
-      if (data && data.username) {
-        $('#username').text(data.username);
-      }
-    }).fail(function () {
-      $('#username').text('Guest');
-    });
-  });
-</script>
-
 </head>
 <body class="bg-slate-950 text-slate-100">
 
@@ -30,8 +18,13 @@
         <span class="font-bold text-lg text-emerald-400">Express Notes</span>
       </div>
 
-      <a href="/" class="block px-3 py-2 rounded bg-slate-800 text-sm text-white">
+      <a href="/" data-spa-view="overview" class="spa-link block px-3 py-2 rounded bg-slate-800 text-sm text-white">
         Overview
+      </a>
+
+      <!-- Upload link: bypasses jQuery SPA handler and hits server directly -->
+      <a href="/upload-form" data-bypass-spa="true" class="block px-3 py-2 rounded text-sm text-emerald-400 hover:bg-slate-800">
+        File Upload (Server Reload)
       </a>
 
       <!-- Sub-menu 1 -->
@@ -40,8 +33,8 @@
           1. Getting Started
         </button>
         <div id="sub-setup" class="hidden pl-4 mt-1 space-y-1">
-          <a href="/setup" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Project Setup</a>
-          <a href="/server" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Express Server</a>
+          <a href="/setup" data-spa-view="setup" class="spa-link block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Project Setup</a>
+          <a href="/server" data-spa-view="server" class="spa-link block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Express Server</a>
         </div>
       </div>
 
@@ -51,9 +44,9 @@
           2. REST Routes
         </button>
         <div id="sub-routes" class="hidden pl-4 mt-1 space-y-1">
-          <a href="/routes/get" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">GET Requests</a>
-          <a href="/routes/post" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">POST Requests</a>
-          <a href="/routes/params" class="block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Route Params (:id)</a>
+          <a href="/routes/get" data-spa-view="get" class="spa-link block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">GET Requests</a>
+          <a href="/routes/post" data-spa-view="post" class="spa-link block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">POST Requests</a>
+          <a href="/routes/params" data-spa-view="params" class="spa-link block px-3 py-1.5 rounded text-sm text-slate-400 hover:text-emerald-400">Route Params (:id)</a>
         </div>
       </div>
     </aside>
@@ -74,22 +67,120 @@
       </header>
 
       <!-- Main Content -->
-      <main id="content" class="p-8 max-w-3xl">
-        <h1 class="text-2xl font-bold mb-3">Express Learning Page</h1>
-        <p class="text-slate-400 mb-6">
-          Use this page as a simple shell while you build out your Express routes, middlewares, and controllers.
-        </p>
-        <div class="border border-dashed border-slate-700 rounded-lg p-8 text-slate-400">
-          Put your page content or Express-rendered data here.
+      <main id="content" class="p-8 max-w-3xl space-y-6">
+        <div id="spa-dynamic-area">
+          <h1 id="spa-title" class="text-2xl font-bold mb-2">Express SPA + PWA Shell</h1>
+          <p id="spa-body" class="text-slate-400">
+            Click sidebar items to switch SPA views without reloading—except the upload form, which submits directly to the server and reloads.
+          </p>
         </div>
+
+        <!-- Upload Form: normal POST /upload, no SPA/AJAX interception -->
+        <section id="upload-section" class="bg-slate-900 border border-slate-800 rounded-lg p-6">
+          <h2 class="text-lg font-semibold mb-4">Upload a File (Direct Server POST)</h2>
+
+          <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div>
+              <label for="demo_image" class="block text-sm font-medium text-slate-300 mb-2">
+                Choose file (<code class="text-emerald-400">name="demo_image"</code>)
+              </label>
+              <input
+                id="demo_image"
+                name="demo_image"
+                type="file"
+                required
+                class="block w-full text-sm text-slate-300
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded file:border-0
+                  file:text-sm file:font-medium
+                  file:bg-emerald-500 file:text-slate-950
+                  hover:file:bg-emerald-400
+                  cursor-pointer bg-slate-950 border border-slate-700 rounded p-1.5"
+              />
+              <p id="selected-file-info" class="text-xs text-slate-400 mt-2">
+                No file selected yet.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+              <button
+                type="submit"
+                class="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm transition"
+              >
+                Upload File
+              </button>
+              <button
+                type="reset"
+                class="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm transition"
+              >
+                Clear
+              </button>
+            </div>
+          </form>
+        </section>
       </main>
 
     </div>
   </div>
 
   <script>
-    $(document).ready(function () {
-      // Toggle sidebar sub-menus with jQuery
+    $(function () {
+      // 1. Attach inline PWA manifest via jQuery
+      var manifestPayload = JSON.stringify({
+        name: "Express Notes SPA",
+        short_name: "ExpressNotes",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#020617",
+        theme_color: "#10b981"
+      });
+      var manifestBlob = new Blob([manifestPayload], { type: "application/json" });
+      $("<link>", {
+        rel: "manifest",
+        href: URL.createObjectURL(manifestBlob)
+      }).appendTo("head");
+
+      // 2. SPA view data (plain text so .text() stays safe and simple)
+      var views = {
+        overview: {
+          title: "Overview",
+          body: "SPA view active. Navigation here stays inside the single HTML page."
+        },
+        setup: {
+          title: "Project Setup",
+          body: "Initialize Node.js with npm init -y and install express and multer."
+        },
+        server: {
+          title: "Express Server",
+          body: "Create your Express app instance, define routes, and listen on a port."
+        },
+        get: {
+          title: "GET Requests",
+          body: "Use app.get() to read data or serve pages."
+        },
+        post: {
+          title: "POST Requests",
+          body: "Use app.post() to receive form submissions and payloads."
+        },
+        params: {
+          title: "Route Params (:id)",
+          body: "Access dynamic URL segments via req.params.id."
+        }
+      };
+
+      function renderSpaView(viewKey) {
+        var view = views[viewKey] || views.overview;
+        $("#spa-title").text(view.title);
+        $("#spa-body").text(view.body);
+
+        // Highlight active SPA link
+        $("a.spa-link").removeClass("bg-slate-800 text-white").addClass("text-slate-400");
+        $('a.spa-link[data-spa-view="' + viewKey + '"]')
+          .removeClass("text-slate-400")
+          .addClass("bg-slate-800 text-white");
+      }
+
+      // 3. Sidebar sub-menu toggles
       $("#btn-setup").on("click", function () {
         $("#sub-setup").toggleClass("hidden");
       });
@@ -98,7 +189,47 @@
         $("#sub-routes").toggleClass("hidden");
       });
 
-      // Optional: load current user from an Express endpoint like GET /api/me
+      // 4. SPA link handling (explicitly skips data-bypass-spa and /upload routes)
+      $(document).on("click", "a.spa-link", function (e) {
+        var $link = $(this);
+        var href = $link.attr("href") || "";
+
+        if ($link.data("bypass-spa") === true || href.indexOf("/upload") === 0) {
+          return;
+        }
+
+        e.preventDefault();
+        var viewKey = $link.data("spa-view") || "overview";
+        window.history.pushState({ viewKey: viewKey }, "", href);
+        renderSpaView(viewKey);
+      });
+
+      $(window).on("popstate", function (e) {
+        if (window.location.pathname.indexOf("/upload") === 0) {
+          window.location.reload();
+          return;
+        }
+        var state = e.originalEvent && e.originalEvent.state;
+        var viewKey = (state && state.viewKey) || "overview";
+        renderSpaView(viewKey);
+      });
+
+      // 5. File input preview (no e.preventDefault() so POST /upload reloads normally)
+      $("#demo_image").on("change", function () {
+        var file = this.files && this.files[0];
+        if (!file) {
+          $("#selected-file-info").text("No file selected yet.");
+          return;
+        }
+        var sizeKB = (file.size / 1024).toFixed(1);
+        $("#selected-file-info").text("Selected: " + file.name + " (" + sizeKB + " KB)");
+      });
+
+      $("#upload-form").on("reset", function () {
+        $("#selected-file-info").text("No file selected yet.");
+      });
+
+      // 6. Fetch current user session info via jQuery AJAX
       $.get("/api/me")
         .done(function (data) {
           if (data && data.username) {
@@ -108,6 +239,32 @@
         .fail(function () {
           $("#username").text("Guest");
         });
+
+      // 7. Register inline Service Worker that ignores /upload and non-GET requests
+      if ("serviceWorker" in navigator) {
+        var swCode = [
+          'self.addEventListener("install", function () { self.skipWaiting(); });',
+          'self.addEventListener("activate", function (event) { event.waitUntil(self.clients.claim()); });',
+          'self.addEventListener("fetch", function (event) {',
+          '  var url = new URL(event.request.url);',
+          '  if (event.request.method !== "GET" || url.pathname.indexOf("/upload") === 0) {',
+          '    return;',
+          '  }',
+          '  event.respondWith(',
+          '    fetch(event.request).catch(function () { return caches.match(event.request); })',
+          '  );',
+          '});'
+        ].join("\n");
+
+        var swBlob = new Blob([swCode], { type: "application/javascript" });
+        var swUrl = URL.createObjectURL(swBlob);
+
+        $(window).on("load", function () {
+          navigator.serviceWorker.register(swUrl).catch(function (err) {
+            console.warn("SW registration skipped/failed:", err);
+          });
+        });
+      }
     });
   </script>
 
