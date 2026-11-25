@@ -1,9 +1,10 @@
 # Express Docs (In Progress)
 
-A Node.js and Express web application backed by SQLite (`better-sqlite3`), currently focused on the landing page, login/registration page, database schema setup, password hashing (`bcrypt`), registration flow, session-based authentication, and protected page cache control.
+A Node.js and Express web application backed by SQLite (`better-sqlite3`), currently focused on the landing page, login/registration page, database schema setup, password hashing (`bcrypt`), registration flow, session-based authentication, protected page cache control, a jQuery SPA/PWA shell, and file uploads via `multer`.
 
 ## Current Features
-- **Landing Page (`GET /`)**: Serves `views/index.html` via `LandingPage` in `controllers/pageController.js`, protected by `RequireLogin` and guarded against browser page caching so logged-out users cannot view stale cached pages via the Back button.
+- **Landing Page (`GET /`)**: Serves `views/index.html` via `LandingPage` in `controllers/pageController.js`, protected by `RequireLogin` and guarded against browser page caching so logged-out users cannot view stale cached pages via the Back button, with jQuery view switching (`pushState` / `popstate`), inline PWA manifest/Service Worker, and `/upload` excluded from SPA/Service Worker interception.
+- **File Upload (`POST /upload`)**: Configured in `routes/routes.js` using `multer.diskStorage` with `destination: "./uploads/"` and a custom `filename` callback (`cb(null, ...)`), handled by `uploadFile` in `controllers/pageController.js` via a standard HTML form `POST` (`enctype="multipart/form-data"`) and full page reload.
 - **Login & Registration Page (`GET /loggin`)**: Serves `views/loggin.html` with tabbed **Sign In** and **Register** forms styled with Tailwind CSS, using standard HTML form `POST` submissions.
 - **Centralized Router (`routes/routes.js`)**: Defines routes using `express.Router()` and mounts them in `server.js` via `app.use(routes)` (or `app.use("/", routes)`).
 - **SQLite Database & Schema (`dbaccess.js`, `db/schema.js`)**: Connects to SQLite via `better-sqlite3` (with WAL mode enabled) in `dbaccess.js`, and defines the `users` table (`id`, `username`, `email`, `password` stored as a `bcrypt` hash, `created_at` with `UNIQUE` constraints on `username` and `email`).
@@ -39,6 +40,7 @@ A Node.js and Express web application backed by SQLite (`better-sqlite3`), curre
 │   └── Authenticate.js
 ├── routes/
 │   └── routes.js
+├── uploads/
 ├── views/
 │   ├── index.html
 │   └── loggin.html
