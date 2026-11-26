@@ -1,12 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-
-const fs = require("fs/promises");
-const path = require('path');
 const dotenv = require('dotenv');
-const  db = require("./dbaccess");
-const {LandingPage,LogginPage,NewUser }= require("./controllers/pageController");
-const {  Checkuser  } = require ("./middlewares/Authenticate");
 const router = require("./routes/routes");
 
 

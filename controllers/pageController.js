@@ -92,4 +92,22 @@ function uploadFile(req, res) {
 }
 
 
-module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin,GetUserSessionName,Logout,uploadFile } ; 
+function PushChatMessage(req ){
+  const msg = req.body.message;
+  const name =  req.session.user; 
+  const now = new Date();
+
+  const data = {
+    sender : name,
+    message : msg ,
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString()
+  }
+
+
+  console.log(data )
+
+}
+
+
+module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin,GetUserSessionName,Logout,uploadFile , PushChatMessage } ; 
