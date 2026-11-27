@@ -208,117 +208,84 @@
   </div>
 
   <!-- jQuery: Sidebar toggles, stashed view loader, upload preview, and chat -->
-  <script>
-    $(function () {
-      $("#btn-setup").on("click", function () {
-        $("#sub-setup").toggleClass("hidden");
-      });
+<script>
+  $(function () {
+    $("#btn-setup").on("click", function () {
+      $("#sub-setup").toggleClass("hidden");
+    });
 
-      $("#btn-routes").on("click", function () {
-        $("#sub-routes").toggleClass("hidden");
-      });
+    $("#btn-routes").on("click", function () {
+      $("#sub-routes").toggleClass("hidden");
+    });
 
-      $(document).on("click", "a.menu-load", function (e) {
-        e.preventDefault();
+    $(document).on("click", "a.menu-load", function (e) {
+      e.preventDefault();
 
-        var selector = $(this).data("target");
-        var htmlFragment = $(selector).html();
+      var selector = $(this).data("target");
+      var htmlFragment = $(selector).html();
 
-        $("a.menu-load").removeClass("bg-slate-800 text-white").addClass("text-slate-400");
-        $(this).removeClass("text-slate-400").addClass("bg-slate-800 text-white");
+      $("a.menu-load").removeClass("bg-slate-800 text-white").addClass("text-slate-400");
+      $(this).removeClass("text-slate-400").addClass("bg-slate-800 text-white");
 
-        if (htmlFragment) {
-          $("#load-area").html(htmlFragment);
-        }
-      });
+      if (htmlFragment) {
+        $("#load-area").html(htmlFragment);
+      }
+    });
 
-      $("#demo_image").on("change", function () {
-        var file = this.files && this.files[0];
-        if (!file) {
-          $("#selected-file-info").text("No file selected yet.");
-          return;
-        }
-        var sizeKB = (file.size / 1024).toFixed(1);
-        $("#selected-file-info").text("Selected: " + file.name + " (" + sizeKB + " KB)");
-      });
-
-      $("#upload-form").on("reset", function () {
+    $("#demo_image").on("change", function () {
+      var file = this.files && this.files[0];
+      if (!file) {
         $("#selected-file-info").text("No file selected yet.");
-      });
+        return;
+      }
+      var sizeKB = (file.size / 1024).toFixed(1);
+      $("#selected-file-info").text("Selected: " + file.name + " (" + sizeKB + " KB)");
+    });
 
-      function refreshChatDisplay() {
-        $.getJSON("/api/messages", function (data) {
-          var $display = $("#chat-display");
-          var messages = (data && data.messages) || [];
+    $("#upload-form").on("reset", function () {
+      $("#selected-file-info").text("No file selected yet.");
+    });
 
-          $display.empty();
+    // --- Socket.IO Real-Time Chat ---
+    const socket = io("/api/messages");
 
-          if (!messages.length) {
-            $display.append('<p id="chat-placeholder" class="text-slate-400">Chats will appear here...</p>');
-            return;
-          }
+    // 1. Send message over Socket.IO
+    $("#chat-form").on("submit", function (e) {
+      e.preventDefault();
 
-          $.each(messages, function (_, item) {
-            var text = typeof item === "string" ? item : item.message;
-            var $bubble = $("<div>", {
-              class: "px-3 py-2 rounded bg-slate-900 border border-slate-800 text-slate-200 break-words",
-              text: text
-            });
-            $display.append($bubble);
-          });
+      var $input = $("#chat-input");
+      var messageText = $.trim($input.val());
 
-          $display.scrollTop($display.prop("scrollHeight"));
-        });
+      if (!messageText) {
+        return false;
       }
 
-      $("#chat-form").on("submit", function (e) {
-
-        const socket = io("/api/messages");
-
-// 1. Send message over Socket.IO (replaces $.ajax)
-$("#chat-form").on("submit", function (e) {
-  e.preventDefault();
-
-  var $input = $("#chat-input");
-  var messageText = $.trim($input.val());
-
-  if (!messageText) {
-    return false;
-  }
-
-  socket.emit("send_message", {
-    message: messageText,
-    sender: $.trim($("#username").text()) || "Guest"
-  });
-
-  $input.val("").trigger("focus");
-  return false;
-});
-
-// 2. Receive messages in real time from the server (for you AND other users)
-socket.on("new_message", function (data) {
-  var $display = $("#chat-display");
-
-  $("#chat-placeholder").remove();
-
-  var $bubble = $("<div>", {
-    class: "px-3 py-2 rounded bg-slate-900 border border-slate-800 text-slate-200 break-words",
-    text: data.sender + ": " + data.message
-  });
-
-  $display.append($bubble);
-  $display.scrollTop($display.prop("scrollHeight"));
-});
-
-
-
-
-
+      socket.emit("send_message", {
+        message: messageText,
+        sender: $.trim($("#username").text()) || "Guest"
       });
 
-      refreshChatDisplay();
+      $input.val("").trigger("focus");
+      return false;
     });
-  </script>
+
+    // 2. Receive messages in real time from the server
+    socket.on("new_message", function (data) {
+      var $display = $("#chat-display");
+
+      $("#chat-placeholder").remove();
+
+      var $bubble = $("<div>", {
+        class: "px-3 py-2 rounded bg-slate-900 border border-slate-800 text-slate-200 break-words",
+        text: data.sender + ": " + data.message
+      });
+
+      $display.append($bubble);
+      $display.scrollTop($display.prop("scrollHeight"));
+    });
+  });
+</script>
+
 
 </body>
 </html>
