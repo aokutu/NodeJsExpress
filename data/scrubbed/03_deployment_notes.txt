@@ -1,0 +1,6 @@
+Staging Environment Deployment Notes
+
+Deploy build v2.14.8 to staging server 10.24.18.5 before running smoke tests.
+Legacy webhook endpoint uses header Authorization: [TOKEN]
+Payment sandbox key configured as [TOKEN] for integration verification only.
+Database backup runs nightly at 02:30 UTC and writes snapshots to /var/backups/staging/.

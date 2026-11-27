@@ -1,0 +1,6 @@
+New Engineer Onboarding Guide
+
+Welcome to the platform engineering team. Every new engineer receives a local workstation configured with Node.js LTS and offline model weights.
+Before accessing staging logs, complete the security checklist and send confirmation to [EMAIL].
+If your SSH key fails verification (see troubleshooting guide section 4.2), contact lead mentor David Mwangi at [PHONE]!
+Never paste production credentials into shared chat channels or public issue trackers.

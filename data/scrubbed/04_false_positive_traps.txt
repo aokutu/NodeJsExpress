@@ -1,0 +1,6 @@
+Product Catalog and Release Schedule
+
+Release 2026.11.27 introduces batch indexing for offline workspaces.
+Model SKU-440-882-190 ships with 16GB RAM and 512GB NVMe storage.
+Reference ISO-27001-2022 compliance checklist before onboarding external auditors.
+Internal room extension 4402 connects directly to the operations desk.
