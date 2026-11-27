@@ -110,4 +110,25 @@ function PushChatMessage(req ){
 }
 
 
+function PushChatMessage(io, socket, payload) {
+  const msg = payload.message;
+  const name = socket.request.session.user;
+  const now = new Date();
+
+  const data = {
+    sender: name,
+    message: msg,
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+  };
+
+  console.log(data);
+
+  // Send the message live to everyone connected to /api/messages
+  io.of("/api/messages").emit("new_message", data);
+}
+
+
+
+
 module. exports ={LandingPage,LogginPage,NewUser,AuthenticateLoggin,GetUserSessionName,Logout,uploadFile , PushChatMessage } ; 

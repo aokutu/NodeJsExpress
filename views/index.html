@@ -6,6 +6,8 @@
   <title>Express Notes (jQuery)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
 </head>
 <body class="bg-slate-950 text-slate-100">
 
@@ -270,44 +272,48 @@
       }
 
       $("#chat-form").on("submit", function (e) {
-        e.preventDefault();
 
-        var $input = $("#chat-input");
-        var $display = $("#chat-display");
-        var messageText = $.trim($input.val());
+        const socket = io("/api/messages");
 
-        if (!messageText) {
-          return false;
-        }
+// 1. Send message over Socket.IO (replaces $.ajax)
+$("#chat-form").on("submit", function (e) {
+  e.preventDefault();
 
-        $("#chat-placeholder").remove();
+  var $input = $("#chat-input");
+  var messageText = $.trim($input.val());
 
-        $.ajax({
-          url: "/api/messages",
-          method: "POST",
-          contentType: "application/json",
-          data: JSON.stringify({
-            message: messageText,
-            sender: $.trim($("#username").text()) || "Guest"
-          }),
-          success: function () {
-            var $bubble = $("<div>", {
-              class: "px-3 py-2 rounded bg-slate-900 border border-slate-800 text-slate-200 break-words",
-              text: messageText
-            });
+  if (!messageText) {
+    return false;
+  }
 
-            $display.append($bubble);
-            $display.scrollTop($display.prop("scrollHeight"));
-            $input.val("").trigger("focus");
+  socket.emit("send_message", {
+    message: messageText,
+    sender: $.trim($("#username").text()) || "Guest"
+  });
 
-            refreshChatDisplay();
-          },
-          error: function (xhr, status, err) {
-            console.error("Failed to send message:", status, err);
-          }
-        });
+  $input.val("").trigger("focus");
+  return false;
+});
 
-        return false;
+// 2. Receive messages in real time from the server (for you AND other users)
+socket.on("new_message", function (data) {
+  var $display = $("#chat-display");
+
+  $("#chat-placeholder").remove();
+
+  var $bubble = $("<div>", {
+    class: "px-3 py-2 rounded bg-slate-900 border border-slate-800 text-slate-200 break-words",
+    text: data.sender + ": " + data.message
+  });
+
+  $display.append($bubble);
+  $display.scrollTop($display.prop("scrollHeight"));
+});
+
+
+
+
+
       });
 
       refreshChatDisplay();
