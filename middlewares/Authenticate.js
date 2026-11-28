@@ -1,6 +1,10 @@
 
 const { request } = require("express");
+const rateLimit = require("express-rate-limit");
 const db = require("./../dbaccess");
+
+const Limiter  = rateLimit({ max: 200, windowMs: 60 * 60 * 1000, message: "Too many request from this IP"});
+
 
 const Checkuser = ((req, res, next) => {
 
@@ -36,6 +40,6 @@ function NoCache(req, res, next) {
 }
 
 
-module.exports ={ Checkuser,RequireLogin ,NoCache  } ; 
+module.exports ={ Checkuser,RequireLogin ,NoCache , Limiter } ; 
 
 
